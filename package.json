@@ -1,0 +1,48 @@
+{
+  "name": "@wirdestack/react-filter",
+  "version": "1.0.0",
+  "description": "A small attribute filter",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "lint": "eslint ./src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wirdehall/react-filter.git"
+  },
+  "keywords": [
+    "react",
+    "filter",
+    "attribute"
+  ],
+  "author": "Wirdehall (https://github.com/wirdehall)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wirdehall/react-filter/issues"
+  },
+  "homepage": "https://github.com/wirdehall/react-filter#readme",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/react": "^19.0.8",
+    "@vitejs/plugin-react-swc": "^4.2.3",
+    "eslint": "^9.39.2",
+    "react": "^19.0.0",
+    "rollup-plugin-react-scoped-css": "^1.2.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.56.0",
+    "vite": "^7.3.1",
+    "vite-plugin-compression": "^0.5.1",
+    "vite-tsconfig-paths": "^6.1.1"
+  },
+  "peerDependencies": {
+    "@mui/material": "^6.4.1",
+    "react": "^19.0.0"
+  }
+}

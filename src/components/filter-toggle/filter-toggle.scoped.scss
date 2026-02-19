@@ -1,0 +1,139 @@
+@use 'distance.scss' as *;
+
+/* The toggle - the box around the slider */
+.toggle {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  cursor: pointer;
+
+  .label {
+    align-self: center;
+  }
+
+  /* The slider */
+  .slider {
+    width: 60px;
+    height: 24px;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    // display: inline-block;
+    position: relative;
+    float: right;
+    color: white;
+
+    &:before, &:after {
+      text-align: center;
+      font-weight: 500;
+      // color: @color;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      position: absolute;
+      transition: opacity .25s;
+    }
+    &:before {
+      content: 'Ja';
+      left: 10px;
+      top: 5px;
+      opacity: 0;
+    }
+    &:after {
+      content: 'Nej';
+      opacity: 1;
+      right: 6px;
+      top: 5px;
+      color: black;
+    }
+
+    .handle {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 3px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+      z-index: 1;
+    }
+
+    /* Rounded sliders */
+    &.round {
+      border-radius: 34px;
+    }
+
+    &.round .handle {
+      border-radius: 50%;
+    }
+  }
+
+  &.stacked .slider {
+    display: block;
+    float: none;
+    margin-top: distance(0.5);
+  }
+
+  /* Hide default HTML checkbox */
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  input:checked + .slider {
+    background-color: var(--color-primary);
+    &:before {
+      opacity: 1;
+      -webkit-transform: opacity 0.25s;
+      -ms-transform: opacity 0.25s;
+      transform: opacity 0.25s;
+    }
+    &:after {
+      opacity: 0;
+      -webkit-transform: opacity 0.25s;
+      -ms-transform: opacity 0.25s;
+      transform: opacity 0.25s;
+    }
+    .handle {
+      -webkit-transform: translateX(34px);
+      -ms-transform: translateX(34px);
+      transform: translateX(34px);
+    }
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px var(--color-primary);
+  }
+
+  &.big {
+    height: 34px;
+    .label {
+      font-size: 18px;
+      font-weight: bold;
+      line-height: 34px;
+    }
+    .slider {
+      height: 34px;
+      width: 65px;
+
+      &:before {
+        left: 10px;
+        top: 10px;
+      }
+      &:after {
+        right: 6px;
+        top: 10px;
+      }
+
+      .handle {
+        height: 26px;
+        width: 26px;
+        bottom: 4px;
+      }
+
+    }
+  }
+}

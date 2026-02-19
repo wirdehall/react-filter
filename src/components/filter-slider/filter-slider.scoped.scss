@@ -1,0 +1,33 @@
+@use 'distance.scss' as *;
+
+.filter {
+  display: grid;
+  row-gap: distance(1);
+  align-content: start;
+
+  .filter-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: distance(1);
+
+    .slider {
+      padding-left: distance(1);
+      padding-right: distance(1);
+    }
+
+    .min-max-labels {
+      display: grid;
+      grid-template-columns: auto auto;
+      .min {
+        justify-self: start;
+      }
+      .max {
+        justify-self: end;
+      }
+    }
+  }
+
+  .mat-chip.mat-standard-chip::after {
+    background: none;
+  }
+}
