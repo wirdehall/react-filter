@@ -111,6 +111,20 @@ export default function ProductsWithFilter({ products }: Params) {
   </div>;
 }
 ```
+And in your CSS somewhere:
+```CSS
+:root {
+  --react-filter-distance: 8px; /* Row gaps and padding will be base on this. */
+  --react-filter-color: #9BCAC5; /* Your project's primary color. */
+  /*OR*/
+  --distance: 8px; 
+  --primary-color: ​#9BCAC5; // Your project's primary color.
+
+  /* Add this to decide to decide what language to use for the toggle button. Default is swedish. */
+  --react-filter-yes: 'Yes';
+  --react-filter-no: 'No';
+}
+```
 
 ## API
 ### Component API

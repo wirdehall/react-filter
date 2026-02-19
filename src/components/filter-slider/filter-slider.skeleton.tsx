@@ -1,6 +1,6 @@
 import { Skeleton } from "@mui/material";
 
-import './filter-chip.scoped.scss';
+import './filter-slider.scoped.scss';
 
 type Params = Readonly<{
   numberOfChips: number;

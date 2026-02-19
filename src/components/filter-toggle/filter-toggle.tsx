@@ -1,4 +1,4 @@
-import './filter-toggle-button.scoped.scss';
+import './filter-toggle.scoped.scss';
 
 import type { FilterChoices } from '@src/custom-hooks/use-filter';
 import { useCallback } from 'react';
