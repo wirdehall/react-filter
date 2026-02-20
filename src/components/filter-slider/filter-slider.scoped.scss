@@ -4,9 +4,7 @@
   display: grid;
   row-gap: distance(1);
   align-content: start;
-  &::deep * {
-    color: var(--react-filter-text-color);
-  }
+  color: var(--react-filter-text-color, revert);
 
   .filter-options {
     display: grid;

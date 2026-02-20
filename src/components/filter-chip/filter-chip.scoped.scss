@@ -4,8 +4,8 @@
   display: grid;
   row-gap: distance(1);
   align-content: start;
-  &::deep * {
-    color: var(--react-filter-text-color);
+  &::deep .MuiChip-label, & {
+    color: var(--react-filter-text-color, revert);
   }
 
   .filter-options {
