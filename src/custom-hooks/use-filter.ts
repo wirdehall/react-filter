@@ -73,13 +73,9 @@ const useGetCurrentlyFilteredFilterChoices = <T>(
   return useMemo(() => Object.entries(filterChoices).reduce<Writeable<FilterChoicesInternal<T>>>((acc, [key, value]) => {
     const filterKey = key as keyof FilterStructure<T>;
     if (filterStructure[filterKey]?.filterType === 'chip') {
-      const valueSorted = (value as ChipChoice).slice().sort();
-      const optionSorted = (options[filterKey] as ChipOptions).slice().sort();
-      const hasFiltered = valueSorted.length === optionSorted.length && optionSorted.every(function(chip, index) {
-          return chip === valueSorted[index];
-      });
+      const hasFiltered = (value as ChipChoice).length !== 0;
       if(hasFiltered) {
-        acc[filterKey] = valueSorted;
+        acc[filterKey] = value as ChipChoice;
       }
     } else if (filterStructure[filterKey]?.filterType === 'slider') {
       const sliderChoice = value as SliderChoice;
@@ -202,10 +198,9 @@ const getFilteredItems = <T extends Record<string, unknown>>(
   filterStructure: FilterStructure<T>,
   filterChoicesIndex: IndexedFilterChoices<T>
 ) => {
-  console.log('getFilteredItems', filterChoicesIndex);
   return items.filter((item) => {
     if(Object.keys(filterChoicesIndex).some(key => item[key] === undefined)) {
-      console.log('Exclude: ', Object.keys(filterChoicesIndex).find(key => item[key] === undefined));
+      // console.log('Exclude: ', Object.keys(filterChoicesIndex).find(key => item[key] === undefined));
       return false;
     }
     for (const [key, choice] of Object.entries(filterChoicesIndex)) {

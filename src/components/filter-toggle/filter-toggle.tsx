@@ -21,7 +21,7 @@ export default function FilterToggleButton({filterName, label, value, size, stac
     } else {
       newFilter[filterName] = true;
     }
-    return () => filter(newFilter);
+    return filter(newFilter);
   }, [currentFilter, filter, filterName]);
 
   return (
