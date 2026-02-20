@@ -7,6 +7,10 @@
   grid-template-columns: 1fr auto;
   cursor: pointer;
 
+  &::deep * {
+    color: var(--react-filter-text-color);
+  }
+
   & > * {
     align-self: center;
   }

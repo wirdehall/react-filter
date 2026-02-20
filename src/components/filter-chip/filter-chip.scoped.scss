@@ -4,11 +4,21 @@
   display: grid;
   row-gap: distance(1);
   align-content: start;
+  &::deep * {
+    color: var(--react-filter-text-color);
+  }
 
   .filter-options {
     display: grid;
     grid-template-columns: repeat( auto-fit, minmax(100px, 1fr) );
     gap: distance(1);
+
+    &::deep .MuiChip-outlined {
+      border: 1px solid var(--react-filter-color, var(--color-primary, #00ABFF));
+    }
+    &::deep .MuiChip-filled {
+      background-color: var(--react-filter-color, var(--color-primary, #00ABFF));
+    }
   }
 
   .mat-chip.mat-standard-chip::after {

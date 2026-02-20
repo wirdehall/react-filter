@@ -4,6 +4,9 @@
   display: grid;
   row-gap: distance(1);
   align-content: start;
+  &::deep * {
+    color: var(--react-filter-text-color);
+  }
 
   .filter-options {
     display: grid;
@@ -13,6 +16,9 @@
     .slider {
       padding-left: distance(1);
       padding-right: distance(1);
+      &::deep * {
+        color: var(--react-filter-color, var(--color-primary, #00ABFF));
+      }
     }
 
     .min-max-labels {
