@@ -30,7 +30,7 @@ function FilterSlider({filterName, label, options, currentFilter, filter, unit, 
 
   return (
     <div className="filter">
-      <h4>{ label }</h4>
+      <h4><span>{ label }</span></h4>
       <div className="filter-options">
         <div className='min-max-labels'>
           <div className='min'>{options.from} {unit}</div>

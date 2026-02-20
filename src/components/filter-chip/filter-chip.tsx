@@ -51,7 +51,7 @@ function FilterChip({filterName, label, options, availableOptions, currentFilter
 
   return (
     <div className="filter">
-      <h4>{ label }</h4>
+      <h4><span>{ label }</span></h4>
       <div className="filter-options">
         { options.map(option => {
           const isSelected = currentFilter && indexedFilterChoices[option];
