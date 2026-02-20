@@ -25,7 +25,7 @@ export default function FilterToggleButton({filterName, label, value, size, stac
   }, [currentFilter, filter, filterName]);
 
   return (
-    <label className={`toggle ${size}${stacked ? ' stacked' : ''}`}>
+    <label className={`toggle ${size ?? ''}${stacked ? ' stacked' : ''}`}>
       <span className="label">{label}</span>
       <div>
         <input type="checkbox" checked={value} onChange={toggleAttribute} />

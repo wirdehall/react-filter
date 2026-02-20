@@ -56,11 +56,47 @@ export const useFilter = <T extends Record<string, unknown>>(
   filterChoices: FilterChoicesInternal<T>,
 ) => {
   const options = useGetOptions<T>(items, filterStructure);
-  const filterChoicesIndex = useGetFilterChoicesIndex<T>(filterStructure, filterChoices);
+  const currentlyFilteredFilterChoices = useGetCurrentlyFilteredFilterChoices<T>(filterStructure, filterChoices, options);
+  const filterChoicesIndex = useGetFilterChoicesIndex<T>(filterStructure, currentlyFilteredFilterChoices);
   const filteredItems = useGetFilteredItems(items, filterStructure, filterChoicesIndex);
   const availableOptions = useGetAvailableOptions(items, filterStructure, filterChoicesIndex);
   return { options, filteredItems, availableOptions };
 };
+
+// We use this to make sure that items that doesn't have attributes that is in the filterStructure can be shown when that specific attribute
+// issn't being filtered on right now. (It should show when no option has been selected but not when the attribute is being filtered on.).
+const useGetCurrentlyFilteredFilterChoices = <T>(
+  filterStructure: FilterStructure<T>,
+  filterChoices: FilterChoicesInternal<T>,
+  options: Options
+): FilterChoicesInternal<T> => {
+  return useMemo(() => Object.entries(filterChoices).reduce<Writeable<FilterChoicesInternal<T>>>((acc, [key, value]) => {
+    const filterKey = key as keyof FilterStructure<T>;
+    if (filterStructure[filterKey]?.filterType === 'chip') {
+      const valueSorted = (value as ChipChoice).slice().sort();
+      const optionSorted = (options[filterKey] as ChipOptions).slice().sort();
+      const hasFiltered = valueSorted.length === optionSorted.length && optionSorted.every(function(chip, index) {
+          return chip === valueSorted[index];
+      });
+      if(hasFiltered) {
+        acc[filterKey] = valueSorted;
+      }
+    } else if (filterStructure[filterKey]?.filterType === 'slider') {
+      const sliderChoice = value as SliderChoice;
+      const sliderOption = options[filterKey] as SliderChoice;
+      const hasFiltered = sliderChoice.from !== sliderOption.from || sliderChoice.to !== sliderOption.to;
+      if(hasFiltered) {
+        acc[filterKey] = sliderChoice;
+      }
+    } else if (filterStructure[filterKey]?.filterType === 'toggle') {
+      if(options[filterKey] as unknown as boolean !== value) {
+        acc[filterKey] = value as ToggleChoice;
+      }
+    }
+
+    return acc;
+  }, {} as Writeable<FilterChoicesInternal<T>>), [filterChoices, filterStructure, options]);
+}
 
 const useGetAvailableOptions = <T extends Record<string, unknown>>(
   items: ReadonlyArray<T>,
@@ -166,7 +202,12 @@ const getFilteredItems = <T extends Record<string, unknown>>(
   filterStructure: FilterStructure<T>,
   filterChoicesIndex: IndexedFilterChoices<T>
 ) => {
+  console.log('getFilteredItems', filterChoicesIndex);
   return items.filter((item) => {
+    if(Object.keys(filterChoicesIndex).some(key => item[key] === undefined)) {
+      console.log('Exclude: ', Object.keys(filterChoicesIndex).find(key => item[key] === undefined));
+      return false;
+    }
     for (const [key, choice] of Object.entries(filterChoicesIndex)) {
       const filter = filterStructure[key as FilterableKeys<T>];
       if (filter === undefined || choice === undefined) {
