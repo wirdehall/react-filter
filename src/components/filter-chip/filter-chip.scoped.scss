@@ -8,6 +8,10 @@
     color: var(--react-filter-text-color, revert);
   }
 
+  h4 {
+    color: var(--react-filter-text-color, revert);
+  }
+
   .filter-options {
     display: grid;
     grid-template-columns: repeat( auto-fit, minmax(100px, 1fr) );

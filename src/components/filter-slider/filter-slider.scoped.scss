@@ -6,6 +6,10 @@
   align-content: start;
   color: var(--react-filter-text-color, revert);
 
+  h4 {
+    color: var(--react-filter-text-color, revert);
+  }
+
   .filter-options {
     display: grid;
     grid-template-columns: 1fr;
