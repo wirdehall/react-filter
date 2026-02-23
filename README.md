@@ -24,7 +24,7 @@ I built a few components and used them in my own project and once I had a need f
 
 ## How to install
 ```bash
-$ npm i @wirdestack/react-filter
+npm i @wirdestack/react-filter
 ```
 
 ## How to use
