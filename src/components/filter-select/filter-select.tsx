@@ -1,6 +1,6 @@
 import './filter-select.scoped.scss';
 
-import { MenuItem, Select } from '@mui/material';
+import { MenuItem, Select, SelectProps } from '@mui/material';
 import { FilterChoices, SingleSelectChoice, SingleSelectOptions } from '@src/custom-hooks/use-filter';
 import { useCallback, useMemo, useState } from 'react';
 
@@ -11,9 +11,9 @@ type Params = Readonly<{
   availableOptions: SingleSelectOptions,
   currentFilter: FilterChoices,
   filter: (filter: FilterChoices) => void
-}>;
+}> & SelectProps;
 
-function FilterSelect({filterName, label, options, availableOptions, currentFilter, filter}: Params) {
+function FilterSelect({filterName, label, options, availableOptions, currentFilter, filter, ...selectProps}: Params) {
   const currentValue = useMemo(() => {
     return currentFilter[filterName] ?? '' as SingleSelectChoice;
   }, [currentFilter, filterName, options]);
@@ -35,6 +35,7 @@ function FilterSelect({filterName, label, options, availableOptions, currentFilt
     <div className="filter">
       <h4><span>{ label }</span></h4>
       <Select
+        { ...selectProps }
         value={value}
         onChange={(event) => filterCall(event.target.value as string | number)}
       >
