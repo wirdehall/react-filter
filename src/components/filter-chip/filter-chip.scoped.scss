@@ -20,7 +20,7 @@
     &::deep .MuiChip-outlined {
       border: 1px solid var(--react-filter-color, var(--color-primary, #00ABFF));
     }
-    &::deep .MuiChip-filled {
+    &::deep .MuiChip-filled.MuiChip-colorPrimary {
       background-color: var(--react-filter-color, var(--color-primary, #00ABFF));
     }
   }

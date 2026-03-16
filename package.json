@@ -1,6 +1,6 @@
 {
   "name": "@wirdestack/react-filter",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "A small React attribute filter with typed filter semantics",
   "type": "module",
   "main": "./dist/react-filter.umd.cjs",
