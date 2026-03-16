@@ -1,0 +1,20 @@
+@use '../../styles/distance' as *;
+
+.filter {
+  display: grid;
+  row-gap: distance(1);
+  align-content: start;
+  &::deep .MuiInputBase-root {
+    color: var(--react-filter-text-color, revert);
+    .MuiSvgIcon-root {
+      color: var(--react-filter-text-color, revert);
+    }
+    .MuiOutlinedInput-notchedOutline {
+      border-color: var(--react-filter-color, var(--color-primary, #00ABFF));
+    }
+  }
+
+  h4 span {
+    color: var(--react-filter-text-color, revert);
+  }
+}

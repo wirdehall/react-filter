@@ -22,6 +22,12 @@ export type MultiSelectFilter = {
   sort?: 'asc' | 'desc';
 };
 
+export type SingleSelectFilter = {
+  filterType: 'single-select';
+  valueType: 'string' | 'number';
+  sort?: 'asc' | 'desc';
+};
+
 export type RangeFilter = {
   filterType: 'range';
   unit?: string;
@@ -31,35 +37,37 @@ export type BooleanFilter = {
   filterType: 'boolean';
 };
 
-export type FilterType = MultiSelectFilter | RangeFilter | BooleanFilter;
+export type FilterType = MultiSelectFilter | SingleSelectFilter | RangeFilter | BooleanFilter;
 
 export type FilterStructure<T> = Readonly<{
   [K in FilterableKeys<T>]?: FilterType;
 }>;
 
 export type MultiSelectOptions = ReadonlyArray<string | number>;
+export type SingleSelectOptions = ReadonlyArray<string | number>;
 export type RangeOptions = Readonly<{ from: number; to: number; }>;
 export type BooleanOptions = null;
 
 export type Options = {
-  [name: string]: MultiSelectOptions | RangeOptions | BooleanOptions;
+  [name: string]: MultiSelectOptions | SingleSelectOptions | RangeOptions | BooleanOptions;
 };
 
 export type MultiSelectChoice = ReadonlyArray<string | number>;
+export type SingleSelectChoice = string | number | null;
 export type RangeChoice = { from: number; to: number; };
 export type BooleanChoice = true | false;
 
 type FilterChoicesInternal<T> = Readonly<{
-  [K in FilterableKeys<T>]?: MultiSelectChoice | RangeChoice | BooleanChoice;
+  [K in FilterableKeys<T>]?: MultiSelectChoice | SingleSelectChoice | RangeChoice | BooleanChoice;
 }>;
 
 export type FilterChoices = Readonly<{
-  [name: string]: MultiSelectChoice | RangeChoice | BooleanChoice;
+  [name: string]: MultiSelectChoice | SingleSelectChoice | RangeChoice | BooleanChoice;
 }>;
 
 type IndexedMultiSelectChoice = { [key: string | number]: true };
 type IndexedFilterChoices<T> = {
-  [K in FilterableKeys<T>]?: IndexedMultiSelectChoice | RangeChoice | BooleanChoice;
+  [K in FilterableKeys<T>]?: IndexedMultiSelectChoice | SingleSelectChoice | RangeChoice | BooleanChoice;
 };
 
 export const useFilter = <T extends Record<string, unknown>>(
@@ -84,10 +92,16 @@ const useGetCurrentlyFilteredFilterChoices = <T>(
 ): FilterChoicesInternal<T> => {
   return useMemo(() => Object.entries(filterChoices).reduce<Writeable<FilterChoicesInternal<T>>>((acc, [key, value]) => {
     const filterKey = key as keyof FilterStructure<T>;
+
     if (filterStructure[filterKey]?.filterType === 'multi-select') {
       const hasFiltered = (value as MultiSelectChoice).length !== 0;
       if (hasFiltered) {
         acc[filterKey] = value as MultiSelectChoice;
+      }
+    } else if (filterStructure[filterKey]?.filterType === 'single-select') {
+      const hasFiltered = value !== null;
+      if (hasFiltered) {
+        acc[filterKey] = value as SingleSelectChoice;
       }
     } else if (filterStructure[filterKey]?.filterType === 'range') {
       const rangeChoice = value as RangeChoice;
@@ -136,10 +150,10 @@ const getOptionForKey = <T extends Record<string, unknown>>(
   key: FilterableKeys<T>,
   type: FilterType,
 ) => {
-  if (type.filterType === 'multi-select') {
+  if (type.filterType === 'multi-select' || type.filterType === 'single-select') {
     const values = items.map(item => item[key]) as Array<string | number>;
     const sortDirection = type.sort === undefined ? true : type.sort === 'asc';
-    return ([...new Set(values)] as Writeable<MultiSelectOptions>).sort((a, b) => sortStringOrNumber(a, b, type.valueType, sortDirection));
+    return ([...new Set(values)].filter((val) => val !== undefined) as Writeable<MultiSelectOptions>).sort((a, b) => sortStringOrNumber(a, b, type.valueType, sortDirection));
   } else if (type.filterType === 'range') {
     if (items.length === 0) {
       return { from: 0, to: 0 };
@@ -182,7 +196,9 @@ const useGetFilterChoicesIndex = <T extends Record<string, unknown>>(
 ) => {
   return useMemo(() => {
     return Object.entries(filterChoices).reduce((acc: IndexedFilterChoices<T>, [key, choices]) => {
-      if (filterStructure[key as FilterableKeys<T>]?.filterType === 'multi-select') {
+      const filter = filterStructure[key as FilterableKeys<T>];
+
+      if (filter?.filterType === 'multi-select') {
         if ((choices as MultiSelectChoice).length !== 0) {
           acc[key as FilterableKeys<T>] = (choices as MultiSelectChoice).reduce((indexedMultiSelectChoice: Writeable<IndexedMultiSelectChoice>, value) => {
             indexedMultiSelectChoice[value] = true;
@@ -190,8 +206,9 @@ const useGetFilterChoicesIndex = <T extends Record<string, unknown>>(
           }, {});
         }
       } else {
-        acc[key as FilterableKeys<T>] = choices as RangeChoice | BooleanChoice;
+        acc[key as FilterableKeys<T>] = choices as SingleSelectChoice | RangeChoice | BooleanChoice;
       }
+
       return acc;
     }, {});
   }, [filterChoices, filterStructure]);
@@ -215,14 +232,22 @@ const getFilteredItems = <T extends Record<string, unknown>>(
       // console.log('Exclude: ', Object.keys(filterChoicesIndex).find(key => item[key] === undefined));
       return false;
     }
+
     for (const [key, choice] of Object.entries(filterChoicesIndex)) {
       const filter = filterStructure[key as FilterableKeys<T>];
+
       if (filter === undefined || choice === undefined) {
         continue; // Ignore filter values that does not exist in the FilterStructure
       }
+
       if (filter.filterType === 'multi-select') {
         const value = item[key] as string | number;
         if ((choice as IndexedMultiSelectChoice)[value] !== true) {
+          return false;
+        }
+      } else if (filter.filterType === 'single-select') {
+        const value = item[key] as string | number;
+        if ((choice as SingleSelectChoice) !== value) {
           return false;
         }
       } else if (filter.filterType === 'range') {
@@ -237,6 +262,7 @@ const getFilteredItems = <T extends Record<string, unknown>>(
         }
       }
     }
+
     return true;
   });
 };
