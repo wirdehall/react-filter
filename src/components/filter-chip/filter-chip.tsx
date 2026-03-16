@@ -1,14 +1,14 @@
 import './filter-chip.scoped.scss';
 
 import { Chip } from '@mui/material';
-import { ChipChoice, ChipOptions, FilterChoices } from '@src/custom-hooks/use-filter';
+import { MultiSelectChoice, MultiSelectOptions, FilterChoices } from '@src/custom-hooks/use-filter';
 import { useCallback, useMemo } from 'react';
 
 type Params = Readonly<{
   filterName: string;
   label: string;
-  options: ChipOptions,
-  availableOptions: ChipOptions,
+  options: MultiSelectOptions,
+  availableOptions: MultiSelectOptions,
   currentFilter: FilterChoices,
   filter: (filter: FilterChoices) => void
 }>;
@@ -18,7 +18,7 @@ function FilterChip({filterName, label, options, availableOptions, currentFilter
     if(currentFilter[filterName] === undefined) {
       return {};
     }
-    return (currentFilter[filterName] as ChipChoice).reduce((acc: { [key: string | number]: true }, choice) => {
+    return (currentFilter[filterName] as MultiSelectChoice).reduce((acc: { [key: string | number]: true }, choice) => {
       acc[choice] = true;
       return acc;
     }, {});
@@ -39,13 +39,13 @@ function FilterChip({filterName, label, options, availableOptions, currentFilter
     if(currentFilter[filterName] === undefined) {
       filter({ ...currentFilter, [filterName]: [option] });
     } else {
-      let chipChoice = currentFilter[filterName] as ChipChoice;
+      let multiSelectChoice = currentFilter[filterName] as MultiSelectChoice;
       if(indexedFilterChoices[option]) {
-        chipChoice = chipChoice.filter(item => item !== option);
+        multiSelectChoice = multiSelectChoice.filter(item => item !== option);
       } else {
-        chipChoice = [ ...chipChoice, option];
+        multiSelectChoice = [ ...multiSelectChoice, option];
       }
-      filter({ ...currentFilter, [filterName]: chipChoice });
+      filter({ ...currentFilter, [filterName]: multiSelectChoice });
     }
   }, [currentFilter, filter, filterName, indexedFilterChoices]);
 

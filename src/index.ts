@@ -4,9 +4,9 @@ import FilterChipSkeleton from './components/filter-chip/filter-chip.skeleton';
 import FilterSlider from './components/filter-slider/filter-slider';
 import FilterSliderSkeleton from './components/filter-slider/filter-slider.skeleton';
 import FilterToggle from './components/filter-toggle/filter-toggle';
-import type { 
-  ChipChoice, ChipOptions, Debug_FilterableKeysOf, FilterChoices, FilterStructure, FilterType, Options, SliderChoice, 
-  SliderOptions, ToggleChoice, ToggleOptions 
+import type {
+  MultiSelectChoice, MultiSelectOptions, Debug_FilterableKeysOf, FilterChoices, FilterStructure, FilterType, Options, RangeChoice,
+  RangeOptions, BooleanChoice, BooleanOptions
 } from '@src/custom-hooks/use-filter';
 
 
@@ -18,17 +18,17 @@ export {
   FilterSlider,
   FilterSliderSkeleton,
   FilterToggle,
-  
+
   // Export types:
-  ChipChoice, 
-  ChipOptions, 
-  Debug_FilterableKeysOf, 
-  FilterChoices, 
-  FilterStructure, 
-  FilterType, 
-  Options, 
-  SliderChoice, 
-  SliderOptions, 
-  ToggleChoice, 
-  ToggleOptions
+  MultiSelectChoice,
+  MultiSelectOptions,
+  Debug_FilterableKeysOf,
+  FilterChoices,
+  FilterStructure,
+  FilterType,
+  Options,
+  RangeChoice,
+  RangeOptions,
+  BooleanChoice,
+  BooleanOptions,
 };

@@ -17,37 +17,37 @@ type FilterableKeys<T> = {
 export type Debug_FilterableKeysOf<T> = FilterableKeys<T>;
 
 export type FilterType =
-  | { filterType: 'chip'; type: 'string' | 'number'; sort?: 'asc' | 'desc' }
-  | { filterType: 'slider' }
-  | { filterType: 'toggle' };
+  | { filterType: 'multi-select'; valueType: 'string' | 'number'; sort?: 'asc' | 'desc' }
+  | { filterType: 'range' }
+  | { filterType: 'boolean' };
 
 export type FilterStructure<T> = Readonly<{
   [K in FilterableKeys<T>]?: FilterType;
 }>;
 
-export type ChipOptions = ReadonlyArray<string | number>;
-export type SliderOptions = Readonly<{ from: number; to: number; }>;
-export type ToggleOptions = null;
+export type MultiSelectOptions = ReadonlyArray<string | number>;
+export type RangeOptions = Readonly<{ from: number; to: number; }>;
+export type BooleanOptions = null;
 
 export type Options = {
-  [name: string]: ChipOptions | SliderOptions | ToggleOptions;
+  [name: string]: MultiSelectOptions | RangeOptions | BooleanOptions;
 };
 
-export type ChipChoice = ReadonlyArray<string | number>;
-export type SliderChoice = { from: number; to: number; };
-export type ToggleChoice = true | false;
+export type MultiSelectChoice = ReadonlyArray<string | number>;
+export type RangeChoice = { from: number; to: number; };
+export type BooleanChoice = true | false;
 
 type FilterChoicesInternal<T> = Readonly<{
-  [K in FilterableKeys<T>]?: ChipChoice | SliderChoice | ToggleChoice;
+  [K in FilterableKeys<T>]?: MultiSelectChoice | RangeChoice | BooleanChoice;
 }>;
 
 export type FilterChoices = Readonly<{
-  [name: string]: ChipChoice | SliderChoice | ToggleChoice;
+  [name: string]: MultiSelectChoice | RangeChoice | BooleanChoice;
 }>;
 
-type IndexedChipChoice = { [key: string | number]: true };
+type IndexedMultiSelectChoice = { [key: string | number]: true };
 type IndexedFilterChoices<T> = {
-  [K in FilterableKeys<T>]?: IndexedChipChoice | SliderChoice | ToggleChoice;
+  [K in FilterableKeys<T>]?: IndexedMultiSelectChoice | RangeChoice | BooleanChoice;
 };
 
 export const useFilter = <T extends Record<string, unknown>>(
@@ -64,7 +64,7 @@ export const useFilter = <T extends Record<string, unknown>>(
 };
 
 // We use this to make sure that items that doesn't have attributes that is in the filterStructure can be shown when that specific attribute
-// issn't being filtered on right now. (It should show when no option has been selected but not when the attribute is being filtered on.).
+// isn't being filtered on right now. (It should show when no option has been selected but not when the attribute is being filtered on.).
 const useGetCurrentlyFilteredFilterChoices = <T>(
   filterStructure: FilterStructure<T>,
   filterChoices: FilterChoicesInternal<T>,
@@ -72,27 +72,27 @@ const useGetCurrentlyFilteredFilterChoices = <T>(
 ): FilterChoicesInternal<T> => {
   return useMemo(() => Object.entries(filterChoices).reduce<Writeable<FilterChoicesInternal<T>>>((acc, [key, value]) => {
     const filterKey = key as keyof FilterStructure<T>;
-    if (filterStructure[filterKey]?.filterType === 'chip') {
-      const hasFiltered = (value as ChipChoice).length !== 0;
-      if(hasFiltered) {
-        acc[filterKey] = value as ChipChoice;
+    if (filterStructure[filterKey]?.filterType === 'multi-select') {
+      const hasFiltered = (value as MultiSelectChoice).length !== 0;
+      if (hasFiltered) {
+        acc[filterKey] = value as MultiSelectChoice;
       }
-    } else if (filterStructure[filterKey]?.filterType === 'slider') {
-      const sliderChoice = value as SliderChoice;
-      const sliderOption = options[filterKey] as SliderChoice;
-      const hasFiltered = sliderChoice.from !== sliderOption.from || sliderChoice.to !== sliderOption.to;
-      if(hasFiltered) {
-        acc[filterKey] = sliderChoice;
+    } else if (filterStructure[filterKey]?.filterType === 'range') {
+      const rangeChoice = value as RangeChoice;
+      const rangeOption = options[filterKey] as RangeChoice;
+      const hasFiltered = rangeChoice.from !== rangeOption.from || rangeChoice.to !== rangeOption.to;
+      if (hasFiltered) {
+        acc[filterKey] = rangeChoice;
       }
-    } else if (filterStructure[filterKey]?.filterType === 'toggle') {
-      if(options[filterKey] as unknown as boolean !== value) {
-        acc[filterKey] = value as ToggleChoice;
+    } else if (filterStructure[filterKey]?.filterType === 'boolean') {
+      if (options[filterKey] as unknown as boolean !== value) {
+        acc[filterKey] = value as BooleanChoice;
       }
     }
 
     return acc;
   }, {} as Writeable<FilterChoicesInternal<T>>), [filterChoices, filterStructure, options]);
-}
+};
 
 const useGetAvailableOptions = <T extends Record<string, unknown>>(
   items: ReadonlyArray<T>,
@@ -124,11 +124,11 @@ const getOptionForKey = <T extends Record<string, unknown>>(
   key: FilterableKeys<T>,
   type: FilterType,
 ) => {
-  if (type.filterType === 'chip') {
+  if (type.filterType === 'multi-select') {
     const values = items.map(item => item[key]) as Array<string | number>;
     const sortDirection = type.sort === undefined ? true : type.sort === 'asc';
-    return ([...new Set(values)] as Writeable<ChipOptions>).sort((a, b) => sortStringOrNumber(a, b, type.type, sortDirection));
-  } else if (type.filterType === 'slider') {
+    return ([...new Set(values)] as Writeable<MultiSelectOptions>).sort((a, b) => sortStringOrNumber(a, b, type.valueType, sortDirection));
+  } else if (type.filterType === 'range') {
     if (items.length === 0) {
       return { from: 0, to: 0 };
     } else {
@@ -137,7 +137,7 @@ const getOptionForKey = <T extends Record<string, unknown>>(
       const max = Math.max(...numericValues);
       return { from: min, to: max };
     }
-  } else if (type.filterType === 'toggle') {
+  } else if (type.filterType === 'boolean') {
     return null;
   }
 };
@@ -170,15 +170,15 @@ const useGetFilterChoicesIndex = <T extends Record<string, unknown>>(
 ) => {
   return useMemo(() => {
     return Object.entries(filterChoices).reduce((acc: IndexedFilterChoices<T>, [key, choices]) => {
-      if (filterStructure[key as FilterableKeys<T>]?.filterType === 'chip') {
-        if ((choices as ChipChoice).length !== 0) {
-          acc[key as FilterableKeys<T>] = (choices as ChipChoice).reduce((indexedChipChoice: Writeable<IndexedChipChoice>, value) => {
-            indexedChipChoice[value] = true;
-            return indexedChipChoice;
+      if (filterStructure[key as FilterableKeys<T>]?.filterType === 'multi-select') {
+        if ((choices as MultiSelectChoice).length !== 0) {
+          acc[key as FilterableKeys<T>] = (choices as MultiSelectChoice).reduce((indexedMultiSelectChoice: Writeable<IndexedMultiSelectChoice>, value) => {
+            indexedMultiSelectChoice[value] = true;
+            return indexedMultiSelectChoice;
           }, {});
         }
       } else {
-        acc[key as FilterableKeys<T>] = choices as SliderChoice | ToggleChoice;
+        acc[key as FilterableKeys<T>] = choices as RangeChoice | BooleanChoice;
       }
       return acc;
     }, {});
@@ -199,7 +199,7 @@ const getFilteredItems = <T extends Record<string, unknown>>(
   filterChoicesIndex: IndexedFilterChoices<T>
 ) => {
   return items.filter((item) => {
-    if(Object.keys(filterChoicesIndex).some(key => item[key] === undefined)) {
+    if (Object.keys(filterChoicesIndex).some(key => item[key] === undefined)) {
       // console.log('Exclude: ', Object.keys(filterChoicesIndex).find(key => item[key] === undefined));
       return false;
     }
@@ -208,19 +208,19 @@ const getFilteredItems = <T extends Record<string, unknown>>(
       if (filter === undefined || choice === undefined) {
         return true; // Ignore filter values that does not exist in the FilterStructure
       }
-      if (filter.filterType === 'chip') {
-        const value = item[key] as  string | number;
-        if ((choice as IndexedChipChoice)[value] !== true) {
+      if (filter.filterType === 'multi-select') {
+        const value = item[key] as string | number;
+        if ((choice as IndexedMultiSelectChoice)[value] !== true) {
           return false;
         }
-      } else if (filter.filterType === 'slider') {
+      } else if (filter.filterType === 'range') {
         const value = item[key] as number;
-        if ((choice as SliderChoice).from > value || (choice as SliderChoice).to < value) {
+        if ((choice as RangeChoice).from > value || (choice as RangeChoice).to < value) {
           return false;
         }
-      } else if (filter.filterType === 'toggle') {
+      } else if (filter.filterType === 'boolean') {
         const value = item[key] as boolean;
-        if ((choice as ToggleChoice) !== value) {
+        if ((choice as BooleanChoice) !== value) {
           return false;
         }
       }

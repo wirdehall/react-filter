@@ -14,9 +14,9 @@ React-filter is a small attribute filter leveraging @material/ui for graphic com
 
 
 ## Motivation
-I needed a lightweight generic way to filter attributes on objects in an efficent manner.  
+I needed a lightweight generic way to filter attributes on objects in an efficient manner.  
 Lightweight for me means no deep dependencies making upgrading your project complex.  
-I built a few components and used them in my own project and once I had a need for it in multiple projects I decided to make a open source lib out of it.
+I built a few components and used them in my own project and once I had a need for it in multiple projects I decided to make an open source library out of it.
 
 ## Requirements
 * React >= 19
@@ -32,7 +32,7 @@ npm i @wirdestack/react-filter
 ### Simple example
 ```ts
 import { useFilter, FilterChip, FilterSlider, FilterToggle } from '@wirdestack/react-filter';
-import type { FilterStructure, ChipOptions, SliderOptions, ToggleChoice } from '@wirdestack/react-filter';
+import type { FilterStructure, MultiSelectOptions, RangeOptions, BooleanChoice } from '@wirdestack/react-filter';
 
 type Product = {
   id: number;
@@ -51,11 +51,11 @@ type Params = Readonly<{
 }>;
 
 const filterStructure: FilterStructure<Product> = {
-  brandName:     { filterType: 'chip', type: 'string', sort: 'asc' },
-  width:         { filterType: 'chip', type: 'number', sort: 'desc' },
-  height:        { filterType: 'slider' },
-  price:         { filterType: 'slider' },
-  quickDelivery: { filterType: 'toggle' },
+  brandName:     { filterType: 'multi-select', valueType: 'string', sort: 'asc' },
+  width:         { filterType: 'multi-select', valueType: 'number', sort: 'desc' },
+  height:        { filterType: 'range' },
+  price:         { filterType: 'range' },
+  quickDelivery: { filterType: 'boolean' },
 };
 
 export default function ProductsWithFilter({ products }: Params) {
@@ -67,24 +67,24 @@ export default function ProductsWithFilter({ products }: Params) {
       <FilterChip
         label="Brand"
         filterName="brandName"
-        options={options['brandName'] as ChipOptions}
-        availableOptions={availableOptions['brandName'] as ChipOptions}
+        options={options['brandName'] as MultiSelectOptions}
+        availableOptions={availableOptions['brandName'] as MultiSelectOptions}
         currentFilter={currentFilter}
         filter={(filter) => setCurrentFilter(filter)}
       />
       <FilterChip
         label="Width"
         filterName="width"
-        options={options['width'] as ChipOptions}
-        availableOptions={availableOptions['width'] as ChipOptions}
+        options={options['width'] as MultiSelectOptions}
+        availableOptions={availableOptions['width'] as MultiSelectOptions}
         currentFilter={currentFilter}
         filter={(filter) => setCurrentFilter(filter)}
       />
       <FilterSlider
         label="Height"
         filterName="height"
-        options={options['height'] as SliderOptions}
-        availableOptions={availableOptions['height'] as SliderOptions}
+        options={options['height'] as RangeOptions}
+        availableOptions={availableOptions['height'] as RangeOptions}
         currentFilter={currentFilter}
         filter={(filter) => setCurrentFilter(filter)}
         unit={'cm'}
@@ -92,8 +92,8 @@ export default function ProductsWithFilter({ products }: Params) {
       <FilterSlider
         label="Price"
         filterName="price"
-        options={options['price'] as SliderOptions}
-        availableOptions={availableOptions['price'] as SliderOptions}
+        options={options['price'] as RangeOptions}
+        availableOptions={availableOptions['price'] as RangeOptions}
         currentFilter={currentFilter}
         filter={(filter) => setCurrentFilter(filter)}
         unit={'€'}
@@ -102,7 +102,7 @@ export default function ProductsWithFilter({ products }: Params) {
       <FilterToggle
         label="Only quick delivery"
         filterName="quickDelivery"
-        value={currentFilter['quickDelivery'] as ToggleChoice}
+        value={currentFilter['quickDelivery'] as BooleanChoice}
         currentFilter={currentFilter}
         filter={(filter) => setCurrentFilter(filter)}
       />
@@ -128,13 +128,16 @@ Optional if you want to style your component, add in your CSS somewhere:
 }
 ```
 
+> Note: `filterType` describes filter behavior, not the UI component used to render it.
+> For example, `multi-select` is currently rendered with `FilterChip`, but could be rendered differently in the future. There is nothing stopping you from just creating your own UI component to use for the filter, they are small and not complicated.
+
 ## API
 ### Component API
 | Component      | Description                                                       |
 | -------------- | ----------------------------------------------------------------- |
-| FilterChip         | Will render filter for an attribute of the type chip. |
-| FilterSlider       | Will render filter for an attribute of the type slider. |
-| FilterToggle       | Will render filter for an attribute of the type toggle. |
+| FilterChip         | Will render a UI for a multi-select filter. |
+| FilterSlider       | Will render a UI for a range filter. |
+| FilterToggle       | Will render a UI for a boolean filter. |
 | FilterChipSkeleton | A placeholder for FilterChip while the page loads if you want less CLS on your site. |
 | FilterSliderSkeleton | A placeholder for FilterSlider while the page loads if you want less CLS on your site. |
 
@@ -142,7 +145,7 @@ Optional if you want to style your component, add in your CSS somewhere:
 
 | Hook             | Description                                                       |
 | ---------------- | ----------------------------------------------------------------- |
-| useFilter        | Takes the following params: <br />- Array of object to filter. <br />- The filterstructure that defines what to filter on. <br />- Current filter choices.<br /><br />Returns an object with the following:<br />- options: Options that can be filtered on.<br />- filteredItems: The items that matched the current filter.<br />- availableOptions: Where options contains the current selected options, this contains all the available options you can pick. |
+| useFilter        | Takes the following params: <br />- Array of object to filter. <br />- The filter structure that defines each filter's behavior. <br />- Current filter choices.<br /><br />Returns an object with the following:<br />- options: Options that can be filtered on.<br />- filteredItems: The items that matched the current filter.<br />- availableOptions: Where options contains the current selected options, this contains all the available options you can pick. |
 
 ## Contributing
 

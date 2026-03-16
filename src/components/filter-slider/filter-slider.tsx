@@ -2,13 +2,13 @@ import './filter-slider.scoped.scss';
 
 import { Slider } from '@mui/material';
 import { useCallback, useMemo, useState } from 'react';
-import { FilterChoices, SliderChoice, SliderOptions } from '@src/custom-hooks/use-filter';
+import { FilterChoices, RangeChoice, RangeOptions } from '@src/custom-hooks/use-filter';
 
 type Params = Readonly<{
   filterName: string;
   label: string;
-  options: SliderOptions;
-  availableOptions: SliderOptions,
+  options: RangeOptions;
+  availableOptions: RangeOptions,
   currentFilter: FilterChoices;
   filter: (filter: FilterChoices) => void;
   unit: string;
@@ -17,7 +17,7 @@ type Params = Readonly<{
 
 function FilterSlider({filterName, label, options, currentFilter, filter, unit, unitAsPrefix}: Params) {
   const currentValue = useMemo(() => {
-    const current = currentFilter[filterName] as SliderChoice;
+    const current = currentFilter[filterName] as RangeChoice;
     return currentFilter[filterName] !== undefined ? [current.from, current.to] : [options.from, options.to];
   }, [currentFilter, filterName, options]);
 
