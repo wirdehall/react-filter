@@ -31,13 +31,14 @@ npm i @wirdestack/react-filter
 
 ### Simple example
 ```ts
-import { useFilter, FilterChip, FilterSlider, FilterToggle } from '@wirdestack/react-filter';
-import type { FilterStructure, MultiSelectOptions, RangeOptions, BooleanChoice } from '@wirdestack/react-filter';
+import { useFilter, FilterChip, FilterSlider, FilterToggle, FilterSelect } from '@wirdestack/react-filter';
+import type { FilterStructure, MultiSelectOptions, RangeOptions, BooleanChoice, SingleSelectOptions } from '@wirdestack/react-filter';
 
 type Product = {
   id: number;
   name: string;
   amount: string;
+  color: string;
   brandName: string;
   width: number;
   height: number;
@@ -51,6 +52,7 @@ type Params = Readonly<{
 }>;
 
 const filterStructure: FilterStructure<Product> = {
+  color:         { filterType: 'single-select', valueType: 'string', sort: 'asc' },
   brandName:     { filterType: 'multi-select', valueType: 'string', sort: 'asc' },
   width:         { filterType: 'multi-select', valueType: 'number', sort: 'desc' },
   height:        { filterType: 'range' },
@@ -64,6 +66,14 @@ export default function ProductsWithFilter({ products }: Params) {
 
   return <div className="products-with-filter">
     <div className="filter">
+      <FilterSelect
+        label="Color"
+        filterName="color"
+        options={options['color'] as SingleSelectOptions}
+        availableOptions={availableOptions['color'] as SingleSelectOptions}
+        currentFilter={currentFilter}
+        filter={(filter) => setCurrentFilter(filter)}
+      />
       <FilterChip
         label="Brand"
         filterName="brandName"
@@ -136,6 +146,7 @@ Optional if you want to style your component, add in your CSS somewhere:
 | Component      | Description                                                       |
 | -------------- | ----------------------------------------------------------------- |
 | FilterChip         | Will render a UI for a multi-select filter. |
+| FilterSelect       | Will render a UI for a single-select filter. |
 | FilterSlider       | Will render a UI for a range filter. |
 | FilterToggle       | Will render a UI for a boolean filter. |
 | FilterChipSkeleton | A placeholder for FilterChip while the page loads if you want less CLS on your site. |
