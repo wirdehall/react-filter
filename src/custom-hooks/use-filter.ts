@@ -16,10 +16,22 @@ type FilterableKeys<T> = {
  */
 export type Debug_FilterableKeysOf<T> = FilterableKeys<T>;
 
-export type FilterType =
-  | { filterType: 'multi-select'; valueType: 'string' | 'number'; sort?: 'asc' | 'desc' }
-  | { filterType: 'range' }
-  | { filterType: 'boolean' };
+export type MultiSelectFilter = {
+  filterType: 'multi-select';
+  valueType: 'string' | 'number';
+  sort?: 'asc' | 'desc';
+};
+
+export type RangeFilter = {
+  filterType: 'range';
+  unit?: string;
+};
+
+export type BooleanFilter = {
+  filterType: 'boolean';
+};
+
+export type FilterType = MultiSelectFilter | RangeFilter | BooleanFilter;
 
 export type FilterStructure<T> = Readonly<{
   [K in FilterableKeys<T>]?: FilterType;
@@ -206,7 +218,7 @@ const getFilteredItems = <T extends Record<string, unknown>>(
     for (const [key, choice] of Object.entries(filterChoicesIndex)) {
       const filter = filterStructure[key as FilterableKeys<T>];
       if (filter === undefined || choice === undefined) {
-        return true; // Ignore filter values that does not exist in the FilterStructure
+        continue; // Ignore filter values that does not exist in the FilterStructure
       }
       if (filter.filterType === 'multi-select') {
         const value = item[key] as string | number;

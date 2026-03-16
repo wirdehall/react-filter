@@ -6,7 +6,7 @@ import FilterSliderSkeleton from './components/filter-slider/filter-slider.skele
 import FilterToggle from './components/filter-toggle/filter-toggle';
 import type {
   MultiSelectChoice, MultiSelectOptions, Debug_FilterableKeysOf, FilterChoices, FilterStructure, FilterType, Options, RangeChoice,
-  RangeOptions, BooleanChoice, BooleanOptions
+  RangeOptions, BooleanChoice, BooleanOptions, BooleanFilter, MultiSelectFilter, RangeFilter,
 } from '@src/custom-hooks/use-filter';
 
 
@@ -22,6 +22,7 @@ export {
   // Export types:
   MultiSelectChoice,
   MultiSelectOptions,
+  MultiSelectFilter,
   Debug_FilterableKeysOf,
   FilterChoices,
   FilterStructure,
@@ -29,6 +30,8 @@ export {
   Options,
   RangeChoice,
   RangeOptions,
+  RangeFilter,
   BooleanChoice,
   BooleanOptions,
+  BooleanFilter,
 };

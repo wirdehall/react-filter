@@ -19,6 +19,7 @@
   "scripts": {
     "build": "tsc && vite build",
     "build:watch": "tsc --watch",
+    "build-for-test": "npm run build && npm pack && rm ../wirdestack-react-filter-*.tgz && mv ./wirdestack-react-filter-*.tgz ../",
     "lint": "eslint ./src"
   },
   "repository": {
