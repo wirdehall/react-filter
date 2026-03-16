@@ -1,6 +1,6 @@
-import { sortStringOrNumber } from "../helpers/sort.helper";
-import { Writeable } from "../helpers/typescript.helper";
-import { useMemo } from "react";
+import { sortStringOrNumber } from '../helpers/sort.helper';
+import { Writeable } from '../helpers/typescript.helper';
+import { useMemo } from 'react';
 
 // Primitive values allowed for filtering
 type FilterablePrimitive = string | number | boolean;
