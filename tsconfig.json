@@ -5,15 +5,8 @@
     "declaration": true,
     "outDir": "dist",
     "strict": true,
-    "jsx": "react-jsx",
     "skipLibCheck": true,
     "esModuleInterop": true,
-
-    /* other */
-    "baseUrl": "./",
-    "paths": {
-      "@src/*": ["src/*"],
-    },
   },
   "exclude": [
     "node_modules",

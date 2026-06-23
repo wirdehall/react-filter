@@ -1,3 +1,0 @@
-@function distance($times) {
-  @return calc($times * var(--react-filter-distance, var(--distance, 8px)));
-}
