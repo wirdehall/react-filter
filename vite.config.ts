@@ -14,7 +14,7 @@ export default defineConfig({
         '**/*.stories.*',
         'node_modules'
       ],
-      outDir: 'dist/src',
+      outDirs: 'dist/src',
       insertTypesEntry: true
     }),
   ],
@@ -29,7 +29,7 @@ export default defineConfig({
       fileName: 'react-filter',
       formats: ['es', 'umd'],
     },
-    rollupOptions: {
+    rolldownOptions: {
       // make sure to externalize deps that shouldn't be bundled into your library
       external: ['react'],
     },

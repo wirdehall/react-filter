@@ -2,12 +2,15 @@
   "compilerOptions": {
     "target": "ES2021",
     "module": "CommonJS",
+    "moduleResolution": "bundler",
     "declaration": true,
     "outDir": "dist",
+    "rootDir": "src",
     "strict": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
   },
+  "include": ["src"],
   "exclude": [
     "node_modules",
     "dist",
